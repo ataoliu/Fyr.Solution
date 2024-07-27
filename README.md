@@ -37,6 +37,6 @@
 
 ## 其他
 - **create.sh**: OSX create bash 脚本 
-- **chmod +x create.sh**:&&**./create.sh**
+- **chmod +x create.sh** && **./create.sh**
 - **run.sh**: OSX run bash 脚本 
-- **chmod +x run.sh**:&&**./run.sh**
+- **chmod +x run.sh** && **./run.sh**
