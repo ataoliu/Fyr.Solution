@@ -1,12 +1,12 @@
-clear 
+clear
 
 webApiPID=""
 rootPrefix="Fyr"
 webApiName="$rootPrefix.WebAPI"
 
-echo "webApiName:$webApiName"
 # 确保 WebAPI 目录存在
 if [ -d "src/$webApiName" ]; then
+
     echo "运行 WebAPI 项目..."
     cd src/$webApiName
     dotnet run &

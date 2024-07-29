@@ -134,6 +134,7 @@ dotnet sln $solutionName.sln add src/$domainName/$domainName.csproj
 dotnet sln $solutionName.sln add src/$infrastructureName/$infrastructureName.csproj
 dotnet sln $solutionName.sln add src/$webName/$webName.csproj
 dotnet sln $solutionName.sln add src/$webApiName/$webApiName.csproj
+dotnet sln $solutionName.sln add src/$sharedName/$sharedName.csproj
 dotnet sln $solutionName.sln add test/$testName/$testName.csproj
 
 # 创建一个示例测试用例

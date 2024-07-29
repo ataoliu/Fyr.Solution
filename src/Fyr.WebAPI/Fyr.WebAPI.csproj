@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="8.0.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
@@ -15,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fyr.Application\Fyr.Application.csproj" />
     <ProjectReference Include="..\Fyr.Infrastructure\Fyr.Infrastructure.csproj" />
+    <ProjectReference Include="..\Fyr.Shared\Fyr.Shared.csproj" />
   </ItemGroup>
 
 </Project>

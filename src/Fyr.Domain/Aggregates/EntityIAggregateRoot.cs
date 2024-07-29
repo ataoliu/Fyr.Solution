@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 namespace Fyr.Domain.Aggregates;
 /// <summary>
-/// 实体聚合根  不允许没有主键
+///   不允许没有主键
 /// </summary>
 /// <typeparam name="T">主键类型</typeparam>
-public abstract class EntityIAggregateRoot<T>
+public abstract class EntityIAggregateRoot<T> : EntityAggregateRoot
 {
     /// <summary>
     /// 主键
@@ -20,7 +20,7 @@ public abstract class EntityIAggregateRoot<T>
     /// <summary>
     /// 创建时间
     /// </summary>
-    public DateTime CreatedAt { get; private set; } 
+    public DateTime CreatedAt { get; private set; }
 
     /// <summary>
     /// 修改时间
@@ -31,18 +31,47 @@ public abstract class EntityIAggregateRoot<T>
     /// <summary>
     /// 标记实体为删除
     /// </summary>
-    public virtual void Delete()
+    public override void Delete()
     {
         Deleted = true;
         // Optionally, update UpdatedAt here
         UpdatedAt = DateTime.UtcNow;
+        base.Delete();
+    }
+    /// <summary>
+    /// 创建实体
+    /// </summary>
+    public override void Create()
+    {
+        CreatedAt = DateTime.UtcNow;
+        base.Create();
+    }
+
+    /// <summary>
+    /// 更新实体
+    /// </summary>
+    public override void Update()
+    {
+        UpdatedAt = DateTime.UtcNow;
+        base.Update();
+    }
+}
+/// <summary>
+/// 实体聚合根
+/// </summary>
+public abstract class EntityAggregateRoot
+{
+    /// <summary>
+    /// 标记实体为删除
+    /// </summary>
+    public virtual void Delete()
+    {
     }
     /// <summary>
     /// 创建实体
     /// </summary>
     public virtual void Create()
     {
-        CreatedAt = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -50,6 +79,5 @@ public abstract class EntityIAggregateRoot<T>
     /// </summary>
     public virtual void Update()
     {
-        UpdatedAt = DateTime.UtcNow;
     }
 }

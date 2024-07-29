@@ -1,11 +1,14 @@
 using Fyr.Domain.Aggregates;
 
 namespace Fyr.Domain.Entities;
+/// <summary>
+/// 用户实体
+/// </summary>
 public class UserEntity : EntityIAggregateRoot<Guid>
 {
 
-    public string Account { get; set; }
-public 
+    public string? Account { get; set; }
+    public string? UserName { get; set; }
 
 
 
