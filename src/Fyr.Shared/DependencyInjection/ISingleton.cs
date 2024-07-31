@@ -1,4 +1,4 @@
-namespace Fyr.Shared.DependencyInjection;
+namespace Fyr.DependencyInjection;
 public interface ISingleton
 {
 

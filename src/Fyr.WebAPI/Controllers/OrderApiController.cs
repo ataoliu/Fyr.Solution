@@ -5,7 +5,7 @@ namespace Fyr.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class OrdersController(IOrderAppService orderAppService) : ControllerBase
+    public class OrdersController(IOrderAppService orderAppService) : BaseController
     {
         private readonly IOrderAppService _orderAppService = orderAppService;
 

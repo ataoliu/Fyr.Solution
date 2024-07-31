@@ -1,5 +1,5 @@
 using System.Reflection;
-using Fyr.Shared.DependencyInjection;
+using Fyr.DependencyInjection;
 
 namespace Fyr.Shared.Extensions;
 /// <summary>
