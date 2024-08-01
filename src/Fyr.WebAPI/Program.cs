@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Fyr.Extensions.AssemblyExtensions.LoadAssemblies();
 builder.Services.AutoRegisterServices();
 var app = builder.Build();
 
