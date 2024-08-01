@@ -1,8 +1,7 @@
-
-using System;
 using Microsoft.Extensions.DependencyInjection;
-namespace Fyr.Shared;
-public class ServiceInjectAttribute : Attribute
+namespace Fyr.Attribute;
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+public class ServiceInjectAttribute :System.Attribute
 {
     public ServiceInjectAttribute()
     {

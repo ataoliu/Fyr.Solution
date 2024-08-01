@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace Fyr.Shared.Models;
+namespace Fyr.Models;
 
 
 public class SimHash

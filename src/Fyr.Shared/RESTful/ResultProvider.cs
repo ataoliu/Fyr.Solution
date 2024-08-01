@@ -1,4 +1,4 @@
-namespace Fyr.Shared.RESTful;
+namespace Fyr.RESTful;
 public class ResultProvider : IResultProvider
 {
     public ApiResponse<T> Success<T>(T data, string message = "Request successful", int code = 200)

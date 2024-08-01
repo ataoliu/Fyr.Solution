@@ -4,13 +4,11 @@ using System.Text.RegularExpressions;
 using Fyr.Tools;
 using DnsClient;
 using System.Net;
-using System.Linq;
 using System.Globalization;
 using System.Text;
-using Fyr.Shared.Models;
 using System.Net.Sockets;
-using Fyr.Shared.Tools;
 using Fyr.Security;
+using Fyr.Models;
 
 
 
@@ -50,10 +48,7 @@ public static partial class StringExtensions
     /// <param name="regex">正则表达式</param>
     /// <param name="replacement">新内容</param>
     /// <returns></returns>
-    public static string Replace(this string input, Regex regex, string replacement)
-    {
-        return regex.Replace(input, replacement);
-    }
+    public static string Replace(this string input, Regex regex, string replacement) => regex.Replace(input, replacement);
 
     /// <summary>
     /// 生成唯一短字符串
@@ -103,15 +98,9 @@ public static partial class StringExtensions
     public static bool Contains(this string s, IEnumerable<string> keys, bool ignoreCase = true)
     {
         if (keys is not ICollection<string> array)
-        {
             array = keys.ToArray();
-        }
-
         if (array.Count == 0 || string.IsNullOrEmpty(s))
-        {
             return false;
-        }
-
         return ignoreCase ? array.Any(item => s.Contains(item, StringComparison.InvariantCultureIgnoreCase)) : array.Any(s.Contains);
     }
 
@@ -125,35 +114,21 @@ public static partial class StringExtensions
     public static bool ContainsSafety(this string s, IEnumerable<string> keys, bool ignoreCase = true)
     {
         if (keys is not ICollection<string> array)
-        {
             array = keys.ToArray();
-        }
-
         if (array.Count == 0 || string.IsNullOrEmpty(s))
-        {
             return false;
-        }
-
         bool flag = false;
         if (ignoreCase)
         {
             foreach (var item in array)
-            {
                 if (s.Contains(item))
-                {
                     flag = true;
-                }
-            }
         }
         else
         {
             foreach (var item in array)
-            {
                 if (s.Contains(item, StringComparison.InvariantCultureIgnoreCase))
-                {
                     flag = true;
-                }
-            }
         }
 
         return flag;
@@ -169,15 +144,9 @@ public static partial class StringExtensions
     public static bool EndsWith(this string s, IEnumerable<string> keys, bool ignoreCase = true)
     {
         if (keys is not ICollection<string> array)
-        {
             array = keys.ToArray();
-        }
-
         if (array.Count == 0 || string.IsNullOrEmpty(s))
-        {
             return false;
-        }
-
         var pattern = $"({array.Select(Regex.Escape).Join("|")})$";
         return ignoreCase ? Regex.IsMatch(s, pattern, RegexOptions.IgnoreCase) : Regex.IsMatch(s, pattern);
     }
@@ -192,15 +161,9 @@ public static partial class StringExtensions
     public static bool StartsWith(this string s, IEnumerable<string> keys, bool ignoreCase = true)
     {
         if (keys is not ICollection<string> array)
-        {
             array = keys.ToArray();
-        }
-
         if (array.Count == 0 || string.IsNullOrEmpty(s))
-        {
             return false;
-        }
-
         var pattern = $"^({array.Select(Regex.Escape).Join("|")})";
         return ignoreCase ? Regex.IsMatch(s, pattern, RegexOptions.IgnoreCase) : Regex.IsMatch(s, pattern);
     }
@@ -215,15 +178,9 @@ public static partial class StringExtensions
     public static bool RegexMatch(this string s, string regex, bool ignoreCase = true)
     {
         if (string.IsNullOrEmpty(regex) || string.IsNullOrEmpty(s))
-        {
             return false;
-        }
-
         if (ignoreCase)
-        {
             return Regex.IsMatch(s, regex, RegexOptions.IgnoreCase);
-        }
-
         return Regex.IsMatch(s, regex);
     }
 
@@ -242,30 +199,21 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="s"></param>
     /// <returns></returns>
-    public static bool IsNullOrEmpty(this string value)
-    {
-        return string.IsNullOrWhiteSpace(value) || value.Equals("null", StringComparison.CurrentCultureIgnoreCase);
-    }
+    public static bool IsNullOrEmpty(this string value) => string.IsNullOrWhiteSpace(value) || value.Equals("null", StringComparison.CurrentCultureIgnoreCase);
 
     /// <summary>
     /// 判断字符串不为空或""
     /// </summary>
     /// <param name="s"></param>
     /// <returns></returns>
-    public static bool NotNullOrEmpty(this string value)
-    {
-        return !string.IsNullOrWhiteSpace(value) && !value.Equals("null", StringComparison.CurrentCultureIgnoreCase);
-    }
+    public static bool NotNullOrEmpty(this string value) => !string.IsNullOrWhiteSpace(value) && !value.Equals("null", StringComparison.CurrentCultureIgnoreCase);
 
     /// <summary>
     /// 转成非null
     /// </summary>
     /// <param name="s"></param>
     /// <returns></returns>
-    public static string AsNotNull(this string s)
-    {
-        return string.IsNullOrEmpty(s) ? "" : s;
-    }
+    public static string AsNotNull(this string s) => string.IsNullOrEmpty(s) ? "" : s;
 
     /// <summary>
     /// 转成非null
@@ -273,10 +221,7 @@ public static partial class StringExtensions
     /// <param name="s"></param>
     /// <param name="value">为空时的替换值</param>
     /// <returns></returns>
-    public static string IfNullOrEmpty(this string s, string value)
-    {
-        return string.IsNullOrEmpty(s) ? value : s;
-    }
+    public static string IfNullOrEmpty(this string s, string value) => string.IsNullOrEmpty(s) ? value : s;
 
     /// <summary>
     /// 转成非null
@@ -284,10 +229,7 @@ public static partial class StringExtensions
     /// <param name="s"></param>
     /// <param name="valueFactory">为空时的替换值函数</param>
     /// <returns></returns>
-    public static string IfNullOrEmpty(this string s, Func<string> valueFactory)
-    {
-        return string.IsNullOrEmpty(s) ? valueFactory() : s;
-    }
+    public static string IfNullOrEmpty(this string s, Func<string> valueFactory) => string.IsNullOrEmpty(s) ? valueFactory() : s;
 
     /// <summary>
     /// 字符串掩码
@@ -298,10 +240,7 @@ public static partial class StringExtensions
     public static string? Mask(this string s, char mask = '*')
     {
         if (string.IsNullOrWhiteSpace(s?.Trim()))
-        {
             return s;
-        }
-
         s = s.Trim();
         string masks = mask.ToString().PadLeft(4, mask);
         return s.Length switch
@@ -327,10 +266,7 @@ public static partial class StringExtensions
     public static (bool isMatch, Match? match) MatchEmail(this string s, bool valid = false)
     {
         if (string.IsNullOrEmpty(s) || s.Length < 7)
-        {
             return (false, null);
-        }
-
         var match = Regex.Match(s, @"[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+");
         var isMatch = match.Success;
         if (isMatch && valid)
@@ -339,18 +275,11 @@ public static partial class StringExtensions
             var task = nslookup.Query(s.Split('@')[1], QueryType.MX).Answers.MxRecords().SelectAsync(r => Dns.GetHostAddressesAsync(r.Exchange.Value).ContinueWith(t =>
             {
                 if (t.IsCanceled || t.IsFaulted)
-                {
-                    return new[]
-                    {
-                            IPAddress.Loopback
-                    };
-                }
-
+                    return [IPAddress.Loopback];
                 return t.Result;
             }));
             isMatch = task.Result.SelectMany(a => a).Any(ip => !ip.IsPrivateIP());
         }
-
         return (isMatch, match);
     }
 
@@ -363,10 +292,7 @@ public static partial class StringExtensions
     public static async Task<(bool isMatch, Match? match)> MatchEmailAsync(this string s, bool valid = false)
     {
         if (string.IsNullOrEmpty(s) || s.Length < 7)
-        {
             return (false, null);
-        }
-
         var match = Regex.Match(s, @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
         var isMatch = match.Success;
         if (isMatch && valid)
@@ -377,10 +303,7 @@ public static partial class StringExtensions
             var result = await query.Answers.MxRecords().SelectAsync(r => Dns.GetHostAddressesAsync(r.Exchange.Value).ContinueWith(t =>
             {
                 if (t.IsCanceled || t.IsFaulted)
-                {
-                    return new[] { IPAddress.Loopback };
-                }
-
+                    return [IPAddress.Loopback];
                 return t.Result;
             }));
             isMatch = result.SelectMany(a => a).Any(ip => !ip.IsPrivateIP());
@@ -405,7 +328,7 @@ public static partial class StringExtensions
         }
 
         var newValue = Mask(oldValue, mask);
-        return newValue + s.Substring(index, s.Length - index);
+        return string.Concat(newValue, s.AsSpan(index, s.Length - index));
     }
 
     #endregion Email
@@ -463,7 +386,7 @@ public static partial class StringExtensions
         };
     }
 
-    private static readonly string[] ChinaIDProvinceCodes = {
+    private static readonly string[] ChinaIDProvinceCodes = [
              "11", "12", "13", "14", "15",
              "21", "22", "23",
              "31", "32", "33", "34", "35", "36", "37",
@@ -474,39 +397,26 @@ public static partial class StringExtensions
             "81",
             "82",
             "91"
-        };
+        ];
 
     private static bool CheckChinaID18(string ID)
     {
         ID = ID.ToUpper();
         Match m = Regex.Match(ID, @"\d{17}[\dX]", RegexOptions.IgnoreCase);
         if (!m.Success)
-        {
             return false;
-        }
 
         if (!ChinaIDProvinceCodes.Contains(ID.Substring(0, 2)))
-        {
             return false;
-        }
-
         CultureInfo zhCN = new("zh-CN", true);
         if (!DateTime.TryParseExact(ID.Substring(6, 8), "yyyyMMdd", zhCN, DateTimeStyles.None, out DateTime birthday))
-        {
             return false;
-        }
-
         if (!birthday.In(new DateTime(1800, 1, 1), DateTime.Today))
-        {
             return false;
-        }
         int[] factors = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
         int sum = 0;
         for (int i = 0; i < 17; i++)
-        {
             sum += (ID[i] - '0') * factors[i];
-        }
-
         int n = (12 - sum % 11) % 11;
         return n < 10 ? ID[17] - '0' == n : ID[17].Equals('X');
     }
@@ -515,21 +425,12 @@ public static partial class StringExtensions
     {
         Match m = Regex.Match(ID, @"\d{15}", RegexOptions.IgnoreCase);
         if (!m.Success)
-        {
             return false;
-        }
-
-        if (!ChinaIDProvinceCodes.Contains(ID.Substring(0, 2)))
-        {
+        if (!ChinaIDProvinceCodes.Contains(ID[..2]))
             return false;
-        }
-
         CultureInfo zhCN = new("zh-CN", true);
-        if (!DateTime.TryParseExact("19" + ID.Substring(6, 6), "yyyyMMdd", zhCN, DateTimeStyles.None, out DateTime birthday))
-        {
+        if (!DateTime.TryParseExact(string.Concat("19", ID.AsSpan(6, 6)), "yyyyMMdd", zhCN, DateTimeStyles.None, out DateTime birthday))
             return false;
-        }
-
         return birthday.In(new DateTime(1800, 1, 1), new DateTime(2000, 1, 1));
     }
 
@@ -568,15 +469,10 @@ public static partial class StringExtensions
     public static uint IPToID(this string addr)
     {
         if (!IPAddress.TryParse(addr, out var ip))
-        {
             return 0;
-        }
-
         byte[] bInt = ip.GetAddressBytes();
         if (BitConverter.IsLittleEndian)
-        {
             Array.Reverse(bInt);
-        }
 
         return BitConverter.ToUInt32(bInt, 0);
     }
@@ -590,10 +486,7 @@ public static partial class StringExtensions
     {
         byte[] bInt = ip.GetAddressBytes();
         if (BitConverter.IsLittleEndian)
-        {
             Array.Reverse(bInt);
-        }
-
         return BitConverter.ToUInt32(bInt, 0);
     }
 
@@ -605,7 +498,6 @@ public static partial class StringExtensions
     public static bool IsPrivateIP(this string ip)
     {
         var address = MatchInetAddress(ip, out var b);
-
         return b && address != null && address.IsPrivateIP();
     }
 
@@ -644,30 +536,21 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="s">源字符串</param>
     /// <returns>是否匹配成功</returns>
-    public static bool MatchPhoneNumber(this string s)
-    {
-        return !string.IsNullOrEmpty(s) && s.Length == 11 && s[0] == '1' && (s[1] > '2' || s[1] <= '9') && long.TryParse(s, out _);
-    }
+    public static bool MatchPhoneNumber(this string s) => !string.IsNullOrEmpty(s) && s.Length == 11 && s[0] == '1' && (s[1] > '2' || s[1] <= '9') && long.TryParse(s, out _);
 
     /// <summary>
     /// 匹配固话号码
     /// </summary>
     /// <param name="s">源字符串</param>
     /// <returns>是否匹配成功</returns>
-    public static bool MatchLandline(this string s)
-    {
-        return Regex.IsMatch(s, @"^0\d{2,3}(?:-?\d{8}|-?\d{7})$");
-    }
+    public static bool MatchLandline(this string s) => Regex.IsMatch(s, @"^0\d{2,3}(?:-?\d{8}|-?\d{7})$");
 
     /// <summary>
     /// 匹配企业的统一社会信用代码
     /// </summary>
     /// <param name="s">源字符串</param>
     /// <returns>是否匹配成功</returns>
-    public static bool MatchUSCC(this string s)
-    {
-        return Regex.IsMatch(s, @"^([0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}|[1-9]\d{14})$");
-    }
+    public static bool MatchUSCC(this string s) => Regex.IsMatch(s, @"^([0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}|[1-9]\d{14})$");
 
     #endregion 校验手机号码的正确性
 
@@ -686,16 +569,11 @@ public static partial class StringExtensions
             case UriHostNameType.Dns:
                 var ipHostEntry = Dns.GetHostEntry(uri.DnsSafeHost);
                 if (ipHostEntry.AddressList.Where(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork).Any(ipAddress => !ipAddress.IsPrivateIP()))
-                {
                     return true;
-                }
-
                 break;
-
             case UriHostNameType.IPv4:
                 return !IPAddress.Parse(uri.DnsSafeHost).IsPrivateIP();
         }
-
         return false;
     }
 
@@ -706,10 +584,7 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="this"></param>
     /// <returns></returns>
-    public static byte[] ToByteArray(this string @this)
-    {
-        return Encoding.UTF8.GetBytes(@this);
-    }
+    public static byte[] ToByteArray(this string @this) => Encoding.UTF8.GetBytes(@this);
 
     #region Crc32
 
@@ -769,10 +644,7 @@ public static partial class StringExtensions
 $", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOptions.Multiline);
         var m = patnumWithCheckbitPattern.Match(patnum);
         if (!m.Success)
-        {
             return false;
-        }
-
         bool isPatnumTrue = true;
         patnum = patnum.ToUpper().Replace(".", "");
         if (patnum.Length == 9 || patnum.Length == 8)
@@ -784,60 +656,38 @@ $", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOption
             int year = Convert.ToUInt16(patnum[..2]);
             year += year >= 85 ? 1900 : 2000; // 不需要显式转换为 ushort
             if (year >= 1985 && year <= 2003)
-
             {
                 int sum = 0;
                 for (byte i = 0; i < 8; i++)
-                {
                     sum += factors8[i] * (patnum[i] - '0');
-                }
-
                 char checkbit = "0123456789X"[sum % 11];
                 if (patnum.Length == 9 && checkbit != patnum[8])
-                {
                     isPatnumTrue = false;
-                }
             }
             else
-            {
                 isPatnumTrue = false;
-            }
         }
         else if (patnum.Length is 13 or 12)
         {
-            byte[] factors12 = { 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5 };
-            int year = Convert.ToUInt16(patnum.Substring(0, 4));
+            byte[] factors12 = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5];
+            int year = Convert.ToUInt16(patnum[..4]);
             if (year >= 2003 && year <= DateTime.Now.Year)
             {
                 int sum = 0;
                 for (byte i = 0; i < 12; i++)
-                {
                     sum += factors12[i] * (patnum[i] - '0');
-                }
-
                 char checkbit = "0123456789X"[sum % 11];
                 if (patnum.Length == 13)
-                {
                     if (checkbit != patnum[12])
-                    {
                         isPatnumTrue = false;
-                    }
-                }
-                else
-                {
-                    patnum += checkbit;
-                }
+                    else
+                        _ = checkbit;
             }
             else
-            {
                 isPatnumTrue = false;
-            }
         }
         else
-        {
             isPatnumTrue = false;
-        }
-
         return isPatnumTrue;
     }
 
@@ -849,10 +699,7 @@ $", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOption
     /// <param name="s"></param>
     /// <param name="length"></param>
     /// <returns></returns>
-    public static string Take(this string s, int length)
-    {
-        return s.Length > length ? s.Substring(0, length) : s;
-    }
+    public static string Take(this string s, int length) => s.Length > length ? s[..length] : s;
 
     /// <summary>
     /// 对比字符串的汉明距离
@@ -867,38 +714,21 @@ $", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOption
     /// </summary>
     /// <param name="s"></param>
     /// <returns></returns>
-    public static bool MatchEmoji(this string s)
-    {
-        return Regex.IsMatch(s, @"(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])");
-    }
+    public static bool MatchEmoji(this string s) => Regex.IsMatch(s, @"(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])");
 
     /// <summary>
     /// 获取字符串的字符数
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
-    public static int CharacterCount(this string str)
-    {
-        return new StringInfo(str).LengthInTextElements;
-        //var enumerator = StringInfo.GetTextElementEnumerator(str);
-        //int length = 0;
-        //while (enumerator.MoveNext())
-        //{
-        //    length++;
-        //}
-
-        //return length;
-    }
+    public static int CharacterCount(this string str) => new StringInfo(str).LengthInTextElements;
 
     /// <summary>
     /// 获取字符串的字节数
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
-    public static int BytesCount(this string str)
-    {
-        return Encoding.UTF8.GetByteCount(str);
-    }
+    public static int BytesCount(this string str) => Encoding.UTF8.GetByteCount(str);
 
     /// <summary>
     /// 转半角(DBC case)
@@ -919,11 +749,8 @@ $", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOption
                 c[i] = (char)32;
                 continue;
             }
-
             if (c[i] > 65280 && c[i] < 65375)
-            {
                 c[i] = (char)(c[i] - 65248);
-            }
         }
 
         return new string(c);
@@ -950,9 +777,7 @@ $", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOption
                 continue;
             }
             if (c[i] < 127 && c[i] > 32)
-            {
                 c[i] = (char)(c[i] + 65248);
-            }
         }
         return new string(c);
     }

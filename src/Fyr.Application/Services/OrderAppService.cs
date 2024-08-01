@@ -1,4 +1,4 @@
-using Fyr.Shared.DependencyInjection;
+using Fyr.DependencyInjection;
 
 namespace Fyr.Application.Services;
 public class OrderAppService : IOrderAppService //: IOrderAppService

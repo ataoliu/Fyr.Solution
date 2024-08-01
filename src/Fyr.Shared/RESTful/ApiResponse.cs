@@ -1,4 +1,4 @@
-namespace Fyr.Shared.RESTful;
+namespace Fyr.RESTful;
 public class ApiResponse<T>
 {
     public bool? Success { get; set; }

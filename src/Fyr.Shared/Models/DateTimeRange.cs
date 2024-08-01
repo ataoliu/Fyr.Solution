@@ -1,6 +1,6 @@
-using Fyr.Shared.Tools;
+using Fyr.Tools;
 
-namespace Fyr.Shared.Models;
+namespace Fyr.Models;
 
 /// <summary>
 /// 时间段

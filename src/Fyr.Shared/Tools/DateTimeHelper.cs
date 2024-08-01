@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using Fyr.Shared.Models;
+using Fyr.Models;
 
-namespace Fyr.Shared.Tools;
+namespace Fyr.Tools;
 // <summary>
     /// 日期操作工具类
     /// </summary>
@@ -331,7 +331,7 @@ namespace Fyr.Shared.Tools;
         public static ICollection<T> GetUnionSet<T>(this T destination, List<T> sources) where T : ITimePeriod, new()
         {
             var result = true;
-            ICollection<T> frames = new List<T>();
+            ICollection<T> frames = [];
 
             var timeFrames = sources.Where(frame =>
                 !(destination.Start > frame.End || destination.End < frame.Start)).ToList();
@@ -342,7 +342,7 @@ namespace Fyr.Shared.Tools;
                     sources.Remove(frame);
                 }
 
-            if (!frames.Any()) return frames;
+            if (frames.Count == 0) return frames;
             var timePeriod = new T()
             {
                 End = frames.OrderBy(frame => frame.End).Max(frame => frame.End),
@@ -352,7 +352,7 @@ namespace Fyr.Shared.Tools;
             while (result)
             {
                 var maxTimeFrame = GetUnionSet<T>(timePeriod, sources);
-                if (!maxTimeFrame.Any())
+                if (maxTimeFrame.Count == 0)
                     result = false;
                 else
                     foreach (var frame in maxTimeFrame)
@@ -388,7 +388,7 @@ namespace Fyr.Shared.Tools;
     }
 
     /// <summary>
-    ///
+    /// ITimePeriod
     /// </summary>
     public interface ITimePeriod
     {

@@ -1,4 +1,5 @@
-using Fyr.Shared.Extensions;
+using System.Reflection;
+using Fyr.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// builder.Services.AddSingleton<IOrderAppService, OrderAppService>();
-builder.Services.AddAutoDI();
-
+// Fyr.Extensions.AssemblyExtensions.LoadAssemblies();
+builder.Services.AutoRegisterServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -19,9 +19,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-// app.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 app.UseHttpsRedirection();
 
 app.MapControllers();
 
 app.Run();
+
+
+
+

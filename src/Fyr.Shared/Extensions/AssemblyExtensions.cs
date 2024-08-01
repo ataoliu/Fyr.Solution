@@ -1,80 +1,86 @@
 using System.Reflection;
+using System.Security.Cryptography;
 using Fyr.DependencyInjection;
 
-namespace Fyr.Shared.Extensions;
+namespace Fyr.Extensions;
 /// <summary>
 /// 程序集扩展
 /// </summary>
 public static class AssemblyExtensions
 {
-    /// <summary>
-    /// 加载所有程序集
-    /// </summary>
-    public static void LoadAllLoadFrom()
+
+    public static void LoadAssemblies()
     {
-        // 获取当前应用程序目录
-        string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
-        // 获取目录中的所有 DLL 文件
-        var dllFiles = Directory.GetFiles(appDirectory, "*.dll");
-
-        foreach (var dllFile in dllFiles)
+        // 获取入口程序集
+        var entryAssembly = Assembly.GetEntryAssembly();
+        if (entryAssembly != null)
         {
-            // 尝试加载每个 DLL 文件
-            try
-            {
-                Assembly.LoadFrom(dllFile);
-            }
-            catch (Exception)
-            {
-            }
+            _ = GetAllDependencies(entryAssembly).OrderBy(s => s.FullName).ToList();
+
         }
     }
+
     /// <summary>
-    /// 获取所有程序集
+    /// 获取程序集的依赖 程序集
     /// </summary>
+    /// <param name="assembly"></param>
     /// <returns></returns>
-    public static Assembly[] GetAssemblies()
+    public static HashSet<Assembly> GetAllDependencies(Assembly assembly)
     {
-        // 加载所有程序集
-        LoadAllLoadFrom();
+        var dependencies = new HashSet<Assembly>();
+        var assembliesToProcess = new Queue<AssemblyName>(assembly.GetReferencedAssemblies());
 
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        // 过滤掉系统程序集
-        var allAssemblies = assemblies
-            .Where(assembly => assembly.FullName != null && !assembly.FullName.StartsWith("System")
-                               && !assembly.FullName.StartsWith("Microsoft")
-                               && !assembly.FullName.StartsWith("netstandard")
-                               && !assembly.FullName.StartsWith("mscorlib")
-                               && !assembly.FullName.StartsWith("WindowsBase")
-                               && !assembly.FullName.StartsWith("PresentationCore")
-                               && !assembly.FullName.StartsWith("PresentationFramework")
-                               && !assembly.FullName.StartsWith("WindowsFormsIntegration"));
+        while (assembliesToProcess.Count > 0)
+        {
+            var assemblyName = assembliesToProcess.Dequeue();
 
-        return allAssemblies.ToArray();
+            // Check if the assembly is already loaded
+            var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(a => a.GetName().FullName == assemblyName.FullName);
+
+            if (loadedAssembly != null)
+            {
+                if (dependencies.Add(loadedAssembly))
+                {
+                    foreach (var referencedAssemblyName in loadedAssembly.GetReferencedAssemblies())
+                    {
+                        if (!dependencies.Any(a => a.GetName().FullName == referencedAssemblyName.FullName))
+                        {
+                            assembliesToProcess.Enqueue(referencedAssemblyName);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    // Load the assembly and add to dependencies
+                    var assemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{assemblyName.Name}.dll");
+                    if (File.Exists(assemblyPath))
+                    {
+                        loadedAssembly = Assembly.LoadFrom(assemblyPath);
+                        if (dependencies.Add(loadedAssembly))
+                        {
+                            foreach (var referencedAssemblyName in loadedAssembly.GetReferencedAssemblies())
+                            {
+                                if (!dependencies.Any(a => a.GetName().FullName == referencedAssemblyName.FullName))
+                                {
+                                    assembliesToProcess.Enqueue(referencedAssemblyName);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to load assembly: {assemblyName.FullName}");
+                    Console.WriteLine(ex);
+                }
+            }
+        }
+
+        return dependencies;
     }
 
-    public static Dictionary<Type, List<Type>> GetAllInterface()
-    {
-        var assemblies = GetAssemblies();
-        Dictionary<Type, List<Type>> dic = [];
-        var transientServices = GetImplementationsOfInterface<ITransient>(assemblies);
-        var scopedServices = GetImplementationsOfInterface<IScoped>(assemblies);
-        var singletonServices = GetImplementationsOfInterface<ISingleton>(assemblies);
-        dic.Add(typeof(ITransient), transientServices.ToList());
-        dic.Add(typeof(IScoped), scopedServices.ToList());
-        dic.Add(typeof(ISingleton), singletonServices.ToList());
-        return dic;
-
-
-
-
-
-    }
-
-    public static IEnumerable<Type> GetImplementationsOfInterface<TInterface>(Assembly[] assemblies)
-    {
-        return assemblies.SelectMany(assembly => assembly.GetTypes())
-                         .Where(type => type.GetInterfaces().Contains(typeof(TInterface)) && !type.IsInterface && !type.IsAbstract);
-    }
 }
